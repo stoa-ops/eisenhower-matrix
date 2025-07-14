@@ -5,7 +5,7 @@ import { TodoistAPI } from '@/lib/todoist';
 
 export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -15,9 +15,10 @@ export async function PUT(
     }
 
     const updates = await request.json();
+    const resolvedParams = await params;
     
     const todoist = new TodoistAPI(session.accessToken);
-    await todoist.updateTask(context.params.id, updates);
+    await todoist.updateTask(resolvedParams.id, updates);
     
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -28,7 +29,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -37,8 +38,9 @@ export async function DELETE(
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
+    const resolvedParams = await params;
     const todoist = new TodoistAPI(session.accessToken);
-    await todoist.deleteTask(context.params.id);
+    await todoist.deleteTask(resolvedParams.id);
     
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -49,7 +51,7 @@ export async function DELETE(
 
 export async function POST(
   request: NextRequest,
-  context: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const session = await getServerSession(authOptions);
@@ -59,11 +61,12 @@ export async function POST(
     }
 
     const { action } = await request.json();
+    const resolvedParams = await params;
     
     const todoist = new TodoistAPI(session.accessToken);
     
     if (action === 'complete') {
-      await todoist.completeTask(context.params.id);
+      await todoist.completeTask(resolvedParams.id);
     }
     
     return NextResponse.json({ success: true });
