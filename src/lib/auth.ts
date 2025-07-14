@@ -50,7 +50,7 @@ export const authOptions: NextAuthOptions = {
       }
       return token;
     },
-    async session({ session, token }: { session: any; token: JWT }) {
+    async session({ session, token }: { session: { accessToken?: string }; token: JWT }) {
       session.accessToken = token.accessToken as string;
       return session;
     },
