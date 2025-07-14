@@ -1,7 +1,7 @@
 'use client';
 
 import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, closestCenter } from '@dnd-kit/core';
-import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+// import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useTasks } from '@/hooks/useTasks';
 import { EisenhowerTask, QuadrantType } from '@/types';
 import DraggableTaskCard from './DraggableTaskCard';
@@ -83,7 +83,6 @@ export default function DragDropMatrix() {
           });
           
           // Update local state to reflect quadrant change
-          const updatedTask = { ...activeTask, quadrant: newQuadrant, priority: newPriority };
           // This will be handled by the useTasks hook through the categorizeTask function
           
           // Refresh tasks to ensure consistency

@@ -1,5 +1,5 @@
 import { NextAuthOptions } from 'next-auth';
-import { JWT } from 'next-auth/jwt';
+// import { JWT } from 'next-auth/jwt';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -16,7 +16,7 @@ export const authOptions: NextAuthOptions = {
       token: 'https://todoist.com/oauth/access_token',
       userinfo: {
         url: 'https://api.todoist.com/sync/v9/sync',
-        async request(context) {
+        async request(context: any) {
           const response = await fetch('https://api.todoist.com/sync/v9/sync', {
             method: 'POST',
             headers: {
@@ -32,7 +32,7 @@ export const authOptions: NextAuthOptions = {
       },
       clientId: process.env.TODOIST_CLIENT_ID,
       clientSecret: process.env.TODOIST_CLIENT_SECRET,
-      profile(profile) {
+      profile(profile: any) {
         return {
           id: profile.id,
           name: profile.full_name,
@@ -43,13 +43,13 @@ export const authOptions: NextAuthOptions = {
     },
   ],
   callbacks: {
-    async jwt({ token, account }) {
+    async jwt({ token, account }: any) {
       if (account) {
         token.accessToken = account.access_token;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: any) {
       session.accessToken = token.accessToken as string;
       return session;
     },
