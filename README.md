@@ -1,36 +1,155 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Eisenhower Matrix - Todoist Integration
 
-## Getting Started
+A modern web application that connects to your Todoist account and organizes your tasks using the Eisenhower Matrix (urgent/important quadrants) with drag-and-drop functionality.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Todoist OAuth Integration**: Secure authentication with your Todoist account
+- **Eisenhower Matrix**: Organize tasks into 4 quadrants:
+  - **Do**: Urgent & Important
+  - **Schedule**: Important, Not Urgent
+  - **Delegate**: Urgent, Not Important
+  - **Delete**: Not Urgent, Not Important
+- **Drag & Drop**: Move tasks between quadrants easily
+- **Task Management**: Create, edit, complete, and delete tasks
+- **Real-time Sync**: Changes sync back to your Todoist account
+- **Responsive Design**: Works on desktop and mobile devices
+
+## Technology Stack
+
+- **Frontend**: React 18 with Next.js 14 (App Router)
+- **Authentication**: NextAuth.js with Todoist OAuth
+- **Styling**: Tailwind CSS
+- **Drag & Drop**: @dnd-kit/core
+- **API**: Todoist REST API v2
+- **TypeScript**: Full type safety
+
+## Setup Instructions
+
+### 1. Prerequisites
+
+- Node.js 18+ installed
+- A Todoist account
+- Basic knowledge of React/Next.js
+
+### 2. Todoist App Registration
+
+1. Go to [Todoist App Management](https://todoist.com/app_console)
+2. Create a new app
+3. Set the redirect URI to: `http://localhost:3000/api/auth/callback/todoist`
+4. Note your Client ID and Client Secret
+
+### 3. Environment Configuration
+
+Create a `.env.local` file in the root directory:
+
+```env
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your-secret-key-here
+TODOIST_CLIENT_ID=your-todoist-client-id
+TODOIST_CLIENT_SECRET=your-todoist-client-secret
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 4. Installation
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+# Install dependencies
+npm install
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+# Run the development server
+npm run dev
+```
 
-## Learn More
+### 5. Usage
 
-To learn more about Next.js, take a look at the following resources:
+1. Visit `http://localhost:3000`
+2. Click "Connect with Todoist"
+3. Authorize the application
+4. Start organizing your tasks!
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+src/
+├── app/                    # Next.js app router pages
+│   ├── api/               # API routes
+│   ├── auth/              # Authentication pages
+│   └── dashboard/         # Main dashboard
+├── components/            # React components
+│   ├── providers/         # Context providers
+│   ├── DragDropMatrix.tsx # Main matrix component
+│   ├── TaskCard.tsx       # Task display component
+│   └── Layout.tsx         # App layout
+├── hooks/                 # Custom React hooks
+├── lib/                   # Utility functions
+├── types/                 # TypeScript definitions
+└── middleware.ts          # Route protection
+```
 
-## Deploy on Vercel
+## Task Categorization Logic
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Tasks are automatically categorized based on:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Urgency**: 
+  - Due date within 2 days = urgent
+  - High priority (P3-P4) = urgent
+- **Importance**:
+  - Priority 3-4 = important
+  - Contains keywords: "project", "deadline", "meeting", "presentation", "review"
+
+## API Endpoints
+
+- `GET /api/tasks` - Fetch all tasks
+- `POST /api/tasks` - Create new task
+- `PUT /api/tasks/[id]` - Update task
+- `DELETE /api/tasks/[id]` - Delete task
+- `POST /api/tasks/[id]` - Complete task
+
+## Deployment
+
+### Vercel (Recommended)
+
+1. Push your code to GitHub
+2. Connect your repository to Vercel
+3. Add environment variables in Vercel dashboard
+4. Update `NEXTAUTH_URL` to your production URL
+5. Update Todoist app redirect URI to your production URL
+
+### Other Platforms
+
+The app can be deployed to any platform that supports Next.js applications. Make sure to:
+
+1. Set all environment variables
+2. Update the Todoist redirect URI
+3. Set `NEXTAUTH_URL` to your production domain
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## License
+
+This project is for personal use and learning purposes.
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Authentication Error**: Check your Todoist Client ID and Secret
+2. **Tasks Not Loading**: Verify your Todoist API permissions
+3. **Drag & Drop Not Working**: Ensure you have the latest version of @dnd-kit
+
+### Support
+
+For issues and questions:
+1. Check the [Todoist API documentation](https://developer.todoist.com/rest/v2/)
+2. Review the [NextAuth.js documentation](https://next-auth.js.org/)
+3. Open an issue in the repository
+
+---
+
+Built with ❤️ for better task management and productivity.
