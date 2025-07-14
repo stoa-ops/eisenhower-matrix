@@ -1,5 +1,6 @@
-import { NextAuthOptions } from 'next-auth';
-// import { JWT } from 'next-auth/jwt';
+import { NextAuthOptions, Profile } from 'next-auth';
+import { JWT } from 'next-auth/jwt';
+import { Account } from 'next-auth';
 
 export const authOptions: NextAuthOptions = {
   providers: [
@@ -16,7 +17,7 @@ export const authOptions: NextAuthOptions = {
       token: 'https://todoist.com/oauth/access_token',
       userinfo: {
         url: 'https://api.todoist.com/sync/v9/sync',
-        async request(context: any) {
+        async request(context: { tokens: { access_token: string } }) {
           const response = await fetch('https://api.todoist.com/sync/v9/sync', {
             method: 'POST',
             headers: {
@@ -32,7 +33,7 @@ export const authOptions: NextAuthOptions = {
       },
       clientId: process.env.TODOIST_CLIENT_ID,
       clientSecret: process.env.TODOIST_CLIENT_SECRET,
-      profile(profile: any) {
+      profile(profile: Profile & { id: string; full_name: string; email: string; avatar_medium: string }) {
         return {
           id: profile.id,
           name: profile.full_name,
@@ -43,13 +44,13 @@ export const authOptions: NextAuthOptions = {
     },
   ],
   callbacks: {
-    async jwt({ token, account }: any) {
+    async jwt({ token, account }: { token: JWT; account: Account | null }) {
       if (account) {
         token.accessToken = account.access_token;
       }
       return token;
     },
-    async session({ session, token }: any) {
+    async session({ session, token }: { session: any; token: JWT }) {
       session.accessToken = token.accessToken as string;
       return session;
     },
